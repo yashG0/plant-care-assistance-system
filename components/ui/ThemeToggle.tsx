@@ -1,26 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 type Theme = "light" | "dark";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("theme") as Theme | null;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const nextTheme: Theme = saved ?? (prefersDark ? "dark" : "light");
-    setTheme(nextTheme);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
   const toggle = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    const current =
+      (document.documentElement.getAttribute("data-theme") as Theme | null) ?? "light";
+    const next: Theme = current === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
   };
 
   return (
@@ -31,7 +19,12 @@ export function ThemeToggle() {
       title="Toggle theme"
       type="button"
     >
-      <span aria-hidden>{theme === "light" ? "🌙" : "☀️"}</span>
+      <span aria-hidden className="theme-icon theme-icon-moon">
+        🌙
+      </span>
+      <span aria-hidden className="theme-icon theme-icon-sun">
+        ☀️
+      </span>
     </button>
   );
 }

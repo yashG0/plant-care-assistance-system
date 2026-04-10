@@ -106,6 +106,22 @@ button {
   animation: pulseSoft 2.5s ease-in-out infinite;
 }
 
+.theme-icon {
+  line-height: 1;
+}
+
+.theme-icon-sun {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-icon-moon {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-icon-sun {
+  display: inline;
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;

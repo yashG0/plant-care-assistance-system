@@ -30,7 +30,7 @@ export function ChatShell() {
       id: crypto.randomUUID(),
       role: "assistant",
       content:
-        "Hello. I am your Plant Care Assistant demo. Ask me anything about watering, sunlight, pests, or growth.",
+        "Hello. I am your Plant Care Assistant. Ask me anything about watering, sunlight, pests, nutrition, or growth.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -68,7 +68,7 @@ export function ChatShell() {
     <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 md:px-8 md:py-7">
       <header className="glass fade-up flex items-center justify-between rounded-2xl px-4 py-3 md:px-5">
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Interactive Demo</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">AI Conversation</p>
           <h1 className="text-lg font-bold md:text-2xl">Plant Care Conversation</h1>
         </div>
         <div className="flex items-center gap-3">
@@ -105,7 +105,7 @@ export function ChatShell() {
               className="h-40 w-full rounded-xl object-cover"
             />
             <p className="px-2 pb-2 pt-3 text-xs text-[var(--muted)]">
-              Presentation mode: responses are mocked so you can demo without API keys.
+              Prototype mode with sample responses for interface evaluation.
             </p>
           </div>
         </aside>

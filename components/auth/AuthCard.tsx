@@ -12,8 +12,12 @@ type AuthCardProps = {
 
 export function AuthCard({ mode }: AuthCardProps) {
   const router = useRouter();
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [location, setLocation] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("beginner");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   const isLogin = mode === "login";
@@ -50,10 +54,24 @@ export function AuthCard({ mode }: AuthCardProps) {
           <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">Plant Assistant</p>
           <h1 className="mt-2 text-3xl font-black">{isLogin ? "Sign In" : "Create Account"}</h1>
           <p className="mt-1 text-sm text-[var(--muted)]">
-            {isLogin ? "Access your demo dashboard" : "Join and explore the demo flow"}
+            {isLogin ? "Access your workspace securely" : "Create your account to get started"}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            {!isLogin && (
+              <label className="block">
+                <span className="mb-1 block text-sm font-semibold">Full Name</span>
+                <input
+                  required
+                  type="text"
+                  value={fullName}
+                  onChange={(event) => setFullName(event.target.value)}
+                  placeholder="Enter your full name"
+                  className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 outline-none transition focus:border-[var(--primary)]"
+                />
+              </label>
+            )}
+
             <label className="block">
               <span className="mb-1 block text-sm font-semibold">Email</span>
               <input
@@ -79,14 +97,42 @@ export function AuthCard({ mode }: AuthCardProps) {
             </label>
 
             {!isLogin && (
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold">Favorite Plant</span>
-                <input
-                  type="text"
-                  placeholder="Monstera, Snake Plant, Aloe Vera..."
-                  className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 outline-none transition focus:border-[var(--primary)]"
-                />
-              </label>
+              <>
+                <label className="block">
+                  <span className="mb-1 block text-sm font-semibold">Location</span>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(event) => setLocation(event.target.value)}
+                    placeholder="City / Region"
+                    className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 outline-none transition focus:border-[var(--primary)]"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="mb-1 block text-sm font-semibold">Experience Level</span>
+                  <select
+                    value={experienceLevel}
+                    onChange={(event) => setExperienceLevel(event.target.value)}
+                    className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 outline-none transition focus:border-[var(--primary)]"
+                  >
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </label>
+
+                <label className="block">
+                  <span className="mb-1 block text-sm font-semibold">Avatar URL</span>
+                  <input
+                    type="url"
+                    value={avatarUrl}
+                    onChange={(event) => setAvatarUrl(event.target.value)}
+                    placeholder="https://example.com/avatar.jpg"
+                    className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2.5 outline-none transition focus:border-[var(--primary)]"
+                  />
+                </label>
+              </>
             )}
 
             <button
