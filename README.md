@@ -1,3 +1,168 @@
+# 🌱 Plant Care Assistant (AI-Powered)
+
+## 🚀 Overview
+
+Plant Care Assistant is a full-stack AI-powered web application that helps users take better care of their plants using intelligent recommendations, chat interaction, and image-based plant analysis.
+
+The system provides:
+
+* AI chatbot for plant care advice
+* Plant identification using images
+* Personalized care recommendations
+* User authentication & chat history
+
+AI systems like this typically analyze plant images and generate care insights using models like Gemini ([Google AI for Developers][1]).
+
+---
+
+## 🧠 Features
+
+### 🔐 Authentication
+
+* User registration & login
+* Session handling (NextAuth)
+
+### 💬 AI Chat System
+
+* Real-time plant care assistant
+* Context-aware responses
+* Chat history storage
+
+### 🌿 Plant Intelligence
+
+* Image-based plant recognition
+* AI-generated care instructions
+* Disease detection (optional)
+
+### 📊 User Data
+
+* Save chat history
+* Personalized recommendations
+
+---
+
+## 🏗️ Tech Stack
+
+### Frontend & Backend
+
+* Next.js (Full-stack framework)
+* React (UI components)
+
+### Database
+
+* Prisma ORM
+* SQLite (or PostgreSQL for production)
+
+### Authentication
+
+* NextAuth.js
+
+### AI Integration
+
+* Google Gemini API
+
+---
+
+## 📁 Project Structure
+
+```
+plant-care-app/
+│
+├── app/
+│   ├── api/
+│   ├── auth/
+│   ├── chat/
+│
+├── components/
+├── lib/
+├── prisma/
+├── public/
+├── styles/
+```
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Clone Repository
+
+```bash
+git clone <repo-url>
+cd plant-care-app
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup Environment Variables
+
+Create `.env` file:
+
+```
+DATABASE_URL="file:./dev.db"
+NEXTAUTH_SECRET="your_secret"
+GEMINI_API_KEY="your_api_key"
+```
+
+### 4. Setup Database
+
+```bash
+npx prisma migrate dev --name init
+```
+
+### 5. Run Development Server
+
+```bash
+npm run dev
+```
+
+---
+
+## 🔄 System Architecture
+
+```
+User → UI → API Routes → AI Service → Database → UI
+```
+
+---
+
+## 🧪 Future Enhancements
+
+* Mobile responsiveness
+* Notifications (watering reminders)
+* Weather-based plant suggestions
+* Multi-language support
+
+---
+
+## 🎯 Goal
+
+To simplify plant care using AI and provide an intuitive assistant for beginners and plant enthusiasts.
+
+---
+
+## 👨‍💻 Author
+
+* Your Name
+* MCA Project (Minor Project)
+
+---
+
+## 📌 Notes
+
+This project is designed for:
+
+* Learning full-stack development
+* Understanding AI integration
+* Building deployable real-world apps
+
+[1]: https://ai.google.dev/competition/projects/plantcare?utm_source=chatgpt.com "PlantCare | Gemini API Developer Competition"
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
