@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
@@ -9,6 +9,12 @@ type Message = {
   id: string;
   role: "user" | "assistant";
   content: string;
+};
+
+type DemoAuthUser = {
+  id: string;
+  fullName: string;
+  email: string;
 };
 
 const mockReplies = [
@@ -25,8 +31,60 @@ const quickPrompts = [
   "What is the best soil mix for monstera?",
 ];
 
+function useDemoUser() {
+  const rawUser = useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+      const onChange = () => callback();
+      window.addEventListener("storage", onChange);
+      window.addEventListener("demo-auth", onChange);
+      return () => {
+        window.removeEventListener("storage", onChange);
+        window.removeEventListener("demo-auth", onChange);
+      };
+    },
+    () => {
+      if (typeof window === "undefined") return "";
+      return sessionStorage.getItem("demoAuthUser") ?? "";
+    },
+    () => ""
+  );
+
+  if (!rawUser) return null;
+
+  try {
+    return JSON.parse(rawUser) as DemoAuthUser;
+  } catch {
+    return null;
+  }
+}
+
+function useDemoGuest() {
+  const rawGuest = useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+      const onChange = () => callback();
+      window.addEventListener("storage", onChange);
+      window.addEventListener("demo-auth", onChange);
+      return () => {
+        window.removeEventListener("storage", onChange);
+        window.removeEventListener("demo-auth", onChange);
+      };
+    },
+    () => {
+      if (typeof window === "undefined") return "";
+      return sessionStorage.getItem("demoGuest") ?? "";
+    },
+    () => ""
+  );
+
+  return rawGuest === "true";
+}
+
 export function ChatShell() {
   const router = useRouter();
+  const user = useDemoUser();
+  const isGuest = useDemoGuest();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: crypto.randomUUID(),
@@ -67,7 +125,9 @@ export function ChatShell() {
   };
 
   const signOut = () => {
+    sessionStorage.removeItem("demoAuthUser");
     localStorage.removeItem("demoAuthUser");
+    window.dispatchEvent(new Event("demo-auth"));
     router.push("/auth/login");
   };
 
@@ -77,7 +137,13 @@ export function ChatShell() {
         <div>
           <p className="text-xs uppercase tracking-[0.16em] text-muted">Plant Care Chat</p>
           <h1 className="text-2xl">AI Assistant Workspace</h1>
-          <p className="text-sm text-muted">Demo conversation interface</p>
+          {user ? (
+            <p className="text-sm text-muted">Welcome back, {user.fullName}.</p>
+          ) : isGuest ? (
+            <p className="text-sm text-muted">Guest mode active.</p>
+          ) : (
+            <p className="text-sm text-muted">Sign in to personalize your experience.</p>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -87,12 +153,32 @@ export function ChatShell() {
           >
             Home
           </Link>
-          <button
-            onClick={signOut}
-            className="rounded-full bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white"
-          >
-            Sign Out
-          </button>
+          {user ? (
+            <button
+              onClick={signOut}
+              className="rounded-full bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => {
+                  sessionStorage.setItem("demoGuest", "true");
+                  window.dispatchEvent(new Event("demo-auth"));
+                }}
+                className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs font-semibold text-muted"
+              >
+                Continue as Guest
+              </button>
+              <Link
+                href="/auth/login"
+                className="rounded-full bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Sign In
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -112,9 +198,24 @@ export function ChatShell() {
             ))}
           </div>
 
-          <p className="mt-4 text-xs text-muted">
-            Note: this is a sample chat with preloaded responses for demonstration.
-          </p>
+          {user ? (
+            <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
+              <p className="text-xs uppercase tracking-[0.18em] text-muted">Profile</p>
+              <p className="mt-1 text-sm font-semibold">{user.fullName}</p>
+              <p className="text-xs text-muted">{user.email}</p>
+            </div>
+          ) : (
+            <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
+              <p className="text-xs uppercase tracking-[0.18em] text-muted">
+                {isGuest ? "Guest Mode Active" : "Guest Mode"}
+              </p>
+              <p className="mt-1 text-sm text-muted">
+                {isGuest
+                  ? "You are browsing as guest. Sign in to save history."
+                  : "Sign in to unlock saved chat history and personalized guidance."}
+              </p>
+            </div>
+          )}
         </aside>
 
         <div className="surface flex min-h-[70vh] flex-col rounded-2xl p-3 md:p-4">
@@ -143,7 +244,13 @@ export function ChatShell() {
             <input
               value={input}
               onChange={(event) => setInput(event.target.value)}
-              placeholder="Ask about watering, soil, sunlight, or pests..."
+              placeholder={
+                user
+                  ? "Ask about watering, soil, sunlight, or pests..."
+                  : isGuest
+                  ? "Continue as guest. Ask your plant question..."
+                  : "Sign in to personalize your plant care guidance..."
+              }
               className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3 outline-none transition focus:border-[var(--primary)]"
             />
             <button

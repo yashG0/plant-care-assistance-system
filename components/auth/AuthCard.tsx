@@ -68,7 +68,10 @@ export function AuthCard({ mode }: AuthCardProps) {
       }
 
       const user = data.user as AuthUser;
-      localStorage.setItem("demoAuthUser", JSON.stringify(user));
+      sessionStorage.setItem("demoAuthUser", JSON.stringify(user));
+      sessionStorage.removeItem("demoGuest");
+      localStorage.removeItem("demoAuthUser");
+      window.dispatchEvent(new Event("demo-auth"));
       setSuccess(isLogin ? "Sign in successful." : "Account created successfully.");
 
       setTimeout(() => {
